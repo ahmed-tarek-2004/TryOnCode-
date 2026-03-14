@@ -1,32 +1,45 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>بحث بالصوت</title>
+    <title>بحث ملابس بالصوت</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        #result { margin-top: 20px; font-size: 20px; color: #333; }
+        #result, #products { margin-top: 20px; font-size: 18px; color: #333; }
         button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        .product { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; width: 200px; }
     </style>
 </head>
 <body>
-    <h1>بحث بالصوت</h1>
-    <button id="start-btn">ابدأ التحدث </button>
+    <h1>بحث ملابس بالصوت</h1>
+    <button id="start-btn">ابدأ التحدث 🎤</button>
     <div id="result">النص سيظهر هنا</div>
+    <div id="products"></div>
 
     <script>
+        // بيانات المنتجات
+        const productsArray = [
+            { name: "تيشرت أسود", type: "تيشرت", color: "أسود", size: "M" },
+            { name: "تيشرت أحمر", type: "تيشرت", color: "أحمر", size: "L" },
+            { name: "جينز أزرق", type: "جينز", color: "أزرق", size: "L" },
+            { name: "جاكيت أبيض", type: "جاكيت", color: "أبيض", size: "XL" },
+            { name: "تيشرت أزرق", type: "تيشرت", color: "أزرق", size: "S" },
+        ];
+
+        // التحقق من دعم المتصفح
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
         if (!SpeechRecognition) {
-            document.getElementById('result').innerText = "متصفحك لا يدعم البحث بالصوت";
+            document.getElementById('result').innerText = "متصفحك لا يدعم البحث بالصوت 😢";
         } else {
             const recognition = new SpeechRecognition();
-            recognition.lang = "ar-EG"; 
-            recognition.interimResults = false; 
+            recognition.lang = "ar-EG";
+            recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
             const startBtn = document.getElementById('start-btn');
             const resultDiv = document.getElementById('result');
+            const productsDiv = document.getElementById('products');
 
             startBtn.addEventListener('click', () => {
                 recognition.start();
@@ -36,16 +49,175 @@
             recognition.addEventListener('result', (event) => {
                 const transcript = event.results[0][0].transcript;
                 resultDiv.innerText = `لقد قلت: "${transcript}"`;
+
+                const specs = extractSpecs(transcript);
+                const results = searchProducts(specs, productsArray);
+                displayResults(results);
             });
 
-            recognition.addEventListener('speechend', () => {
-                recognition.stop();
-            });
-
+            recognition.addEventListener('speechend', () => recognition.stop());
             recognition.addEventListener('error', (event) => {
                 resultDiv.innerText = `حدث خطأ: ${event.error}`;
             });
+
+            // استخراج المواصفات
+            function extractSpecs(text) {
+                const colors = ["أحمر", "أزرق", "أبيض", "أسود"];
+                const sizes = ["S", "M", "L", "XL"];
+                const types = ["تيشرت", "جينز", "جاكيت"];
+
+                const color = colors.find(c => text.includes(c));
+                const size = sizes.find(s => text.includes(s));
+                const type = types.find(t => text.includes(t));
+
+                return { color, size, type };
+            }
+
+            // البحث في المنتجات
+            function searchProducts(specs, products) {
+                return products.filter(p =>
+                    (!specs.color || p.color === specs.color) &&
+                    (!specs.size || p.size === specs.size) &&
+                    (!specs.type || p.type === specs.type)
+                );
+            }
+
+            // عرض النتائج
+            function displayResults(results) {
+                productsDiv.innerHTML = "";
+                if (results.length === 0) {
+                    productsDiv.innerHTML = "لا توجد منتجات مطابقة 😢";
+                    return;
+                }
+                results.forEach(p => {
+                    const div = document.createElement("div");
+                    div.className = "product";
+                    div.innerHTML = `<strong>${p.name}</strong><br>النوع: ${p.type}<br>اللون: ${p.color}<br>المقاس: ${p.size}`;
+                    productsDiv.appendChild(div);
+                });
+            }
         }
     </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>بحث ملابس بالصوت – ذكي</title>
+<style>
+body { font-family: Arial; text-align:center; margin-top:50px; }
+#result, #products { margin-top:20px; font-size:18px; color:#333; }
+button { padding:10px 20px; font-size:16px; cursor:pointer; }
+.product { border:1px solid #ccc; padding:10px; margin:10px; display:inline-block; width:200px; }
+</style>
+</head>
+<body>
+<h1>بحث ملابس بالصوت – ذكي</h1>
+<button id="start-btn">ابدأ التحدث 🎤</button>
+<div id="result">النص سيظهر هنا</div>
+<div id="products"></div>
+
+<script>
+// بيانات المنتجات
+const productsArray = [
+    { name: "تيشرت أسود", type: "تيشرت", color: "أسود", size: "M" },
+    { name: "تيشرت أحمر", type: "تيشرت", color: "أحمر", size: "L" },
+    { name: "جينز أزرق", type: "جينز", color: "أزرق", size: "L" },
+    { name: "جاكيت أبيض", type: "جاكيت", color: "أبيض", size: "XL" },
+    { name: "تيشرت أزرق", type: "تيشرت", color: "أزرق", size: "S" },
+];
+
+// خريطة المقاسات
+const sizeMap = {
+    "S": ["S", "صغير", "Small"],
+    "M": ["M", "متوسط", "Medium"],
+    "L": ["L", "كبير", "Large"],
+    "XL": ["XL", "اكس لارج", "اكس اكس لارج", "Extra Large"]
+};
+
+// الكلمات المفتاحية
+const colors = ["أحمر","أزرق","أبيض","أسود"];
+const types = ["تيشرت","جينز","جاكيت"];
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SpeechRecognition) {
+    document.getElementById('result').innerText = "متصفحك لا يدعم البحث بالصوت 😢";
+} else {
+    const recognition = new SpeechRecognition();
+    recognition.lang = "ar-EG";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    const startBtn = document.getElementById('start-btn');
+    const resultDiv = document.getElementById('result');
+    const productsDiv = document.getElementById('products');
+
+    startBtn.addEventListener('click', () => {
+        recognition.start();
+        resultDiv.innerText = "استمع لك... تحدث الآن 🎙️";
+    });
+
+    recognition.addEventListener('result', (event) => {
+        const transcript = event.results[0][0].transcript;
+        resultDiv.innerText = `لقد قلت: "${transcript}"`;
+
+        const specs = extractSpecs(transcript);
+        const results = searchProducts(specs, productsArray);
+        displayResults(results);
+    });
+
+    recognition.addEventListener('speechend', () => recognition.stop());
+    recognition.addEventListener('error', (event) => resultDiv.innerText = `حدث خطأ: ${event.error}`);
+}
+
+// استخراج المواصفات بشكل ذكي
+function extractSpecs(text) {
+    text = text.toLowerCase();
+    
+    // النوع
+    const type = types.find(t => text.includes(t.toLowerCase())) || null;
+    
+    // اللون
+    const color = colors.find(c => text.includes(c.toLowerCase()) && !text.includes("أي")) || null;
+    
+    // المقاس
+    let size = null;
+    for (const [key, variants] of Object.entries(sizeMap)) {
+        if (variants.some(v => text.includes(v.toLowerCase())) && !text.includes("أي")) {
+            size = key;
+            break;
+        }
+    }
+
+    return { color, size, type };
+}
+
+// البحث في المنتجات بشكل مرن
+function searchProducts(specs, products) {
+    return products.filter(p =>
+        (!specs.type || p.type.toLowerCase() === specs.type.toLowerCase()) &&
+        (!specs.color || p.color.toLowerCase() === specs.color.toLowerCase()) &&
+        (!specs.size || p.size === specs.size)
+    );
+}
+
+// عرض النتائج
+function displayResults(results) {
+    const productsDiv = document.getElementById('products');
+    productsDiv.innerHTML = "";
+    if (results.length === 0) {
+        productsDiv.innerHTML = "لا توجد منتجات مطابقة 😢";
+        return;
+    }
+    results.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `<strong>${p.name}</strong><br>النوع: ${p.type}<br>اللون: ${p.color}<br>المقاس: ${p.size}`;
+        productsDiv.appendChild(div);
+    });
+}
+</script>
 </body>
 </html>
