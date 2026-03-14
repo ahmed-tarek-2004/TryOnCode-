@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>بحث بالصوت</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #result { margin-top: 20px; font-size: 20px; color: #333; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>بحث بالصوت</h1>
+    <button id="start-btn">ابدأ التحدث </button>
+    <div id="result">النص سيظهر هنا</div>
+
+    <script>
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            document.getElementById('result').innerText = "متصفحك لا يدعم البحث بالصوت";
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.lang = "ar-EG"; 
+            recognition.interimResults = false; 
+            recognition.maxAlternatives = 1;
+
+            const startBtn = document.getElementById('start-btn');
+            const resultDiv = document.getElementById('result');
+
+            startBtn.addEventListener('click', () => {
+                recognition.start();
+                resultDiv.innerText = "استمع لك... تحدث الآن 🎙️";
+            });
+
+            recognition.addEventListener('result', (event) => {
+                const transcript = event.results[0][0].transcript;
+                resultDiv.innerText = `لقد قلت: "${transcript}"`;
+            });
+
+            recognition.addEventListener('speechend', () => {
+                recognition.stop();
+            });
+
+            recognition.addEventListener('error', (event) => {
+                resultDiv.innerText = `حدث خطأ: ${event.error}`;
+            });
+        }
+    </script>
+</body>
+</html>
